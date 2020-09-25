@@ -1,11 +1,12 @@
 ﻿// контейнер <list> двозвязний список
-// forward list 
+// forward list  (однозвязний список)
 // функтор
 // предикат (тру чи фолс)
 // сортування
 // лямбда функція
 #include <iostream>
 #include <list>
+#include <forward_list>
 using namespace std;
 
 template <class T>
@@ -100,14 +101,57 @@ void test8() { // сортування функтор
 	s1.sort(SortReverse());
 	cout << s1; cout << endl;
 }
-bool IfBiggerThan(int k) { return k > 5; }
 
-void test9() { 
+void test9() {
 	list <int> s1{ 2,3,1,5,1,5,3 };
-	s1.remove_if(IfBiggerThan);
+	int k = 4;
+	s1.remove_if([k](int a) { return a < k; });
 	cout << s1; cout << endl;
 }
-
+struct DelNumber {
+	int k;
+	DelNumber(int n) { k = n; }
+	bool operator () (int a) { return a < k; }
+};
+void test10() { // функтор
+	list <int> s1{ 2,3,1,5,1,5,3 };
+	int k = 4;
+	s1.remove_if(DelNumber(k));
+	cout << s1; cout << endl;
+}
+template <class T>
+ostream& operator << (ostream& os, forward_list<T>& d) {
+	for (auto el : d)
+		cout << el << '\t'; cout << endl;
+	return os;
+}
+void test11() { // однозвязний список
+	forward_list <int> s1{ 2,3,1,5,1,5,3 };
+	cout << s1; cout << endl;
+	//begin
+	//end
+	//cbegin
+	//cend
+	//ітератор before_begin повертає ітератор, який є перед бегіном
+	s1.push_front(100);
+	cout << s1; cout << endl;
+	auto it = s1.begin(); //беремо ітератора
+	++it;
+	//s1.insert_after(it, 200); передали 1 200тку
+	s1.insert_after(it, 2, 200); //передали 2 200тки
+	cout << s1; cout << endl;
+	s1.insert_after(s1.before_begin(), 300);
+	cout << s1; cout << endl;
+}
+void test12() { // однозвязний список, видалення (після якогось елементу)
+	forward_list <int> s1{ 2,3,1,5,1,5,3 };
+	cout << s1; cout << endl;
+	auto it = s1.begin(); //беремо ітератора
+	s1.erase_after(it);
+	cout << s1; cout << endl;
+	s1.pop_front(); // видаляє "голову"
+	cout << s1; cout << endl;
+}
 int main()
 {
 	//test();
@@ -119,7 +163,10 @@ int main()
 	//test6();
 	//test7();
 	//test8();
-	test9();
+	//test9();
+	//test10();
+	//test11();
+	test12();
 	//test();
 	//test();
 
